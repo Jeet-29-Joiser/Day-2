@@ -1,9 +1,9 @@
-package com.example.itemlist
+package com.example.itemlist.ui.adapter
 
-import Product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.itemlist.data.Product
 import com.example.itemlist.databinding.ItemProductBinding
 
 class ProductAdapter(
@@ -11,19 +11,22 @@ class ProductAdapter(
     private val onClick: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
-    inner class ProductViewHolder(val binding: ItemProductBinding)
-        : RecyclerView.ViewHolder(binding.root)
+    class ProductViewHolder(val binding: ItemProductBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+
         val binding = ItemProductBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
+
         return ProductViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+
         val product = productList[position]
 
         holder.binding.tvName.text = product.name
@@ -34,5 +37,7 @@ class ProductAdapter(
         }
     }
 
-    override fun getItemCount() = productList.size
+    override fun getItemCount(): Int {
+        return productList.size
+    }
 }
