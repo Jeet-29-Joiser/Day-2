@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.navigation.fragment.findNavController
-import com.example.itemlist.ProductListFragmentDirections
 import com.example.itemlist.databinding.FragmentProductListBinding
 import com.example.itemlist.ui.adapter.ProductAdapter
+import com.example.itemlist.viewmodel.ProductUiState
 import com.example.itemlist.viewmodel.ProductViewModel
 
 class ProductListFragment : Fragment() {
@@ -32,22 +32,40 @@ class ProductListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
 
         viewModel.loadProducts()
 
-        viewModel.products.observe(viewLifecycleOwner) { products ->
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
 
-            val adapter = ProductAdapter(products) { product ->
+            when (state) {
 
-                val action =
-                    ProductListFragmentDirections
-                        .actionProductListFragmentToDetailFragment(product.id)
+                is ProductUiState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
 
-                findNavController().navigate(action)
+                is ProductUiState.Success -> {
+
+                    binding.progressBar.visibility = View.GONE
+
+                    val adapter =
+                        ProductAdapter(state.products) {}
+
+                    binding.recyclerView.adapter = adapter
+                }
+
+                is ProductUiState.Error -> {
+
+                    binding.progressBar.visibility = View.GONE
+
+                    Toast.makeText(
+                        requireContext(),
+                        state.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-
-            binding.recyclerView.adapter = adapter
         }
     }
 

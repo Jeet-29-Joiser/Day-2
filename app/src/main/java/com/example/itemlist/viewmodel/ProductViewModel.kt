@@ -3,21 +3,38 @@ package com.example.itemlist.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.itemlist.data.Product
+import androidx.lifecycle.viewModelScope
 import com.example.itemlist.data.ProductRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProductViewModel : ViewModel() {
 
     private val repository = ProductRepository()
 
-    private val _products = MutableLiveData<List<Product>>()
-    val products: LiveData<List<Product>> = _products
+    private val _uiState = MutableLiveData<ProductUiState>()
+    val uiState: LiveData<ProductUiState> = _uiState
 
     fun loadProducts() {
-        _products.value = repository.getProducts()
-    }
 
-    fun getProductById(id: Int): Product? {
-        return repository.getProductById(id)
+        _uiState.value = ProductUiState.Loading
+
+        viewModelScope.launch {
+
+            try {
+
+                val products = withContext(Dispatchers.IO) {
+                    repository.getProducts()
+                }
+
+                _uiState.value = ProductUiState.Success(products)
+
+            } catch (e: Exception) {
+
+                _uiState.value =
+                    ProductUiState.Error("Failed to load products")
+            }
+        }
     }
 }
