@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
+import com.example.itemlist.ProductListFragmentDirections
 import com.example.itemlist.databinding.FragmentProductListBinding
 import com.example.itemlist.ui.adapter.ProductAdapter
 import com.example.itemlist.viewmodel.ProductViewModel
