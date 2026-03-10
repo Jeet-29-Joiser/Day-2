@@ -29,9 +29,8 @@ class ProductAdapter(
 
         val product = productList[position]
 
-        holder.binding.tvName.text = product.name
-        holder.binding.tvPrice.text = product.price
-
+        holder.binding.tvName.text = product.title
+        holder.binding.tvPrice.text = "$${product.price}"
         holder.itemView.setOnClickListener {
             onClick(product)
         }

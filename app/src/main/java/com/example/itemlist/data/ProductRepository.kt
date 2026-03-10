@@ -1,18 +1,17 @@
 package com.example.itemlist.data
 
-import kotlinx.coroutines.delay
+import com.example.itemlist.data.network.RetrofitClient
 
 class ProductRepository {
 
-    suspend fun getProducts(): List<Product> {
-        delay(2000)
+    suspend fun getProducts(): List<Product>? {
 
-            return listOf(
-                Product(1, "Laptop", "$800"),
-                Product(2, "Phone", "$500"),
-                Product(3, "Headphones", "$150"),
-                Product(4, "Keyboard", "$80"),
-                Product(5, "Mouse", "$40")
-            )
+        val response = RetrofitClient.api.getProducts()
+
+        if (response.isSuccessful) {
+            return response.body()
         }
+
+        return null
     }
+}

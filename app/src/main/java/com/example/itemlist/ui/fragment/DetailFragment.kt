@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.example.itemlist.DetailFragmentArgs
 import com.example.itemlist.databinding.FragmentDetailBinding
 
 class DetailFragment : Fragment() {
