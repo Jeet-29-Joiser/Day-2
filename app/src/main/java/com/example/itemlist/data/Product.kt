@@ -1,8 +1,12 @@
 package com.example.itemlist.data
 
+import java.io.Serializable
+
 data class Product(
-    val id: Int,
-    val title: String,
-    val price: Double,
-    val image: String
-)
+    val id:Int,
+    val title:String,
+    val price:Double,
+    val description:String,
+    val category:String,
+    val image:String
+) : Serializable

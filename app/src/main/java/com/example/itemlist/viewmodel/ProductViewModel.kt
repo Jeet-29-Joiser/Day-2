@@ -2,7 +2,6 @@ package com.example.itemlist.viewmodel
 
 import androidx.lifecycle.*
 import com.example.itemlist.data.ProductRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ProductViewModel : ViewModel() {
@@ -16,23 +15,20 @@ class ProductViewModel : ViewModel() {
 
         _uiState.value = ProductUiState.Loading
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
 
             try {
 
-                val products = repository.getProducts()
+                val response = repository.getProducts()
 
-                if (products != null) {
-                    _uiState.postValue(ProductUiState.Success(products))
-                } else {
-                    _uiState.postValue(ProductUiState.Error("Failed to load data"))
-                }
+                _uiState.value =
+                    ProductUiState.Success(response)
 
             } catch (e: Exception) {
 
-                _uiState.postValue(
-                    ProductUiState.Error("No internet connection")
-                )
+                _uiState.value =
+                    ProductUiState.Error("Failed to load products")
+
             }
         }
     }

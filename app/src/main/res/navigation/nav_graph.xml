@@ -1,27 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/productListFragment">
+    app:startDestination="@id/categoryFragment">
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.example.itemlist.ui.fragment.CategoryFragment"
+        android:label="Categories"
+        tools:layout="@layout/fragment_category">
+
+        <action
+            android:id="@+id/action_categoryFragment_to_productListFragment"
+            app:destination="@id/productListFragment" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/productListFragment"
         android:name="com.example.itemlist.ui.fragment.ProductListFragment"
-        android:label="Product List">
+        android:label="Products"
+        tools:layout="@layout/fragment_product_list">
+
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
 
         <action
-            android:id="@+id/action_productListFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            android:id="@+id/action_productListFragment_to_productDetailFragment"
+            app:destination="@id/productDetailFragment" />
+
     </fragment>
 
     <fragment
-        android:id="@+id/detailFragment"
-        android:name="com.example.itemlist.ui.fragment.DetailFragment">
+        android:id="@+id/productDetailFragment"
+        android:name="com.example.itemlist.ui.fragment.ProductDetailFragment"
+        android:label="Product Detail"
+        tools:layout="@layout/fragment_product_detail">
 
         <argument
-            android:name="productId"
-            app:argType="integer"/>
+            android:name="product"
+            app:argType="com.example.itemlist.data.Product" />
+
     </fragment>
 
 </navigation>
