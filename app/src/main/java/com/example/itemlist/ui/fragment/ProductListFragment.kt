@@ -39,7 +39,7 @@ class ProductListFragment : Fragment() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext())
 
-        viewModel.loadProducts()
+        viewModel.loadProducts(args.categoryName)
 
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
 

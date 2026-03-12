@@ -11,7 +11,7 @@ class ProductViewModel : ViewModel() {
     private val _uiState = MutableLiveData<ProductUiState>()
     val uiState: LiveData<ProductUiState> = _uiState
 
-    fun loadProducts() {
+    fun loadProducts(category: String) {
 
         _uiState.value = ProductUiState.Loading
 
@@ -19,7 +19,8 @@ class ProductViewModel : ViewModel() {
 
             try {
 
-                val response = repository.getProducts()
+                val response =
+                    repository.getProductsByCategory(category)
 
                 _uiState.value =
                     ProductUiState.Success(response)
@@ -28,7 +29,6 @@ class ProductViewModel : ViewModel() {
 
                 _uiState.value =
                     ProductUiState.Error("Failed to load products")
-
             }
         }
     }
