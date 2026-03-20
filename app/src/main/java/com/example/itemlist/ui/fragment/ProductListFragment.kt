@@ -14,7 +14,9 @@ import com.example.itemlist.ui.adapter.ProductAdapter
 import com.example.itemlist.viewmodel.ProductUiState
 import com.example.itemlist.viewmodel.ProductViewModel
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProductListFragment : Fragment() {
 
     private val args: ProductListFragmentArgs by navArgs()

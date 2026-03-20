@@ -2,11 +2,14 @@ package com.example.itemlist.viewmodel
 
 import androidx.lifecycle.*
 import com.example.itemlist.data.ProductRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProductViewModel : ViewModel() {
-
-    private val repository = ProductRepository()
+@HiltViewModel
+class ProductViewModel @Inject constructor(
+    private val repository: ProductRepository
+) : ViewModel() {
 
     private val _uiState = MutableLiveData<ProductUiState>()
     val uiState: LiveData<ProductUiState> = _uiState
@@ -19,16 +22,18 @@ class ProductViewModel : ViewModel() {
 
             try {
 
-                val response =
-                    repository.getProductsByCategory(category)
+                repository.fetchAndCache(category)
 
-                _uiState.value =
-                    ProductUiState.Success(response)
+                repository.getProducts(category).collect { products ->
+
+                    _uiState.value =
+                        ProductUiState.Success(products)
+                }
 
             } catch (e: Exception) {
 
                 _uiState.value =
-                    ProductUiState.Error("Failed to load products")
+                    ProductUiState.Error("Failed to load data")
             }
         }
     }
