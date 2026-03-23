@@ -18,7 +18,7 @@ class ProductViewModel @Inject constructor(
 
         _uiState.value = ProductUiState.Loading
 
-        // 🔹 1. Observe DB FIRST (SSOT)
+        // 1️⃣ Always observe DB
         viewModelScope.launch {
 
             repository.getProducts(category).collect { products ->
@@ -29,16 +29,15 @@ class ProductViewModel @Inject constructor(
             }
         }
 
-        // 🔹 2. Fetch from API in background
+        // 2️⃣ Try API
         viewModelScope.launch {
 
-            try {
-                repository.refreshProducts(category)
-            } catch (e: Exception) {
+            val error = repository.refreshProducts(category)
 
-                // Only show error if NO cached data exists
+            if (error != null) {
+
                 _uiState.value =
-                    ProductUiState.Error("No Internet & No Cached Data")
+                    ProductUiState.Error(error)
             }
         }
     }

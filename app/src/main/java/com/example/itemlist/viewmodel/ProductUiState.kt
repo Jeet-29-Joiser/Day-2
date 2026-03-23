@@ -11,6 +11,7 @@ sealed class ProductUiState {
     ) : ProductUiState()
 
     data class Error(
-        val message: String
+        val message: String,
+        val canRetry: Boolean = true
     ) : ProductUiState()
 }

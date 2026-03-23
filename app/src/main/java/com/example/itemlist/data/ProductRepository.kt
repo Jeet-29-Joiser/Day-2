@@ -13,27 +13,37 @@ class ProductRepository @Inject constructor(
     private val dao: ProductDao
 ) {
 
-    // 🔹 SINGLE SOURCE OF TRUTH (Room)
     fun getProducts(category: String): Flow<List<Product>> {
 
         return dao.getProductsByCategory(category)
             .map { list -> list.map { it.toProduct() } }
     }
 
-    // 🔹 NETWORK UPDATE (safe)
-    suspend fun refreshProducts(category: String) {
 
-        try {
+    suspend fun refreshProducts(category: String): String? {
+
+        return try {
 
             val products = api.getProductsByCategory(category)
 
             dao.clearProducts()
 
             dao.insertProducts(products.map { it.toEntity() })
+            null
 
-        } catch (e: Exception) {
-            // ❗ IMPORTANT
-            // Do nothing → fallback to cached data
+        } catch (e: retrofit2.HttpException) {
+            when(e.code())
+            {
+                401 -> "Unauthorizes access"
+                404 -> "Products not found"
+                500 -> "Server Error"
+                else -> "Something Went Wrong"
+            }
+        }catch (e: java.io.IOException){
+            "NO Internet Connedtion"
+        }catch (e: Exception)
+        {
+            "Unexpected error occured"
         }
     }
 }

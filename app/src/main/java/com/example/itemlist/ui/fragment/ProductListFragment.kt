@@ -49,14 +49,16 @@ class ProductListFragment : Fragment() {
 
                 is ProductUiState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
+                    binding.btnRetry.visibility = View.GONE
                 }
 
                 is ProductUiState.Success -> {
 
                     binding.progressBar.visibility = View.GONE
+                    binding.btnRetry.visibility = View.GONE
 
-                    val adapter =
-                        ProductAdapter(state.products){ product ->
+                    binding.recyclerView.adapter =
+                        ProductAdapter(state.products) { product ->
 
                             val action =
                                 ProductListFragmentDirections
@@ -64,21 +66,26 @@ class ProductListFragment : Fragment() {
 
                             findNavController().navigate(action)
                         }
-
-                    binding.recyclerView.adapter = adapter
                 }
 
                 is ProductUiState.Error -> {
 
                     binding.progressBar.visibility = View.GONE
+                    binding.btnRetry.visibility = View.VISIBLE
 
                     Toast.makeText(
                         requireContext(),
                         state.message,
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
+        }
+        binding.btnRetry.setOnClickListener {
+
+            val category = args.categoryName
+
+            viewModel.loadProducts(category)
         }
     }
 
