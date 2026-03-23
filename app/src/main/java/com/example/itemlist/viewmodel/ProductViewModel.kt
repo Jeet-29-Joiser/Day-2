@@ -18,22 +18,27 @@ class ProductViewModel @Inject constructor(
 
         _uiState.value = ProductUiState.Loading
 
+        // 🔹 1. Observe DB FIRST (SSOT)
+        viewModelScope.launch {
+
+            repository.getProducts(category).collect { products ->
+
+                if (products.isNotEmpty()) {
+                    _uiState.value = ProductUiState.Success(products)
+                }
+            }
+        }
+
+        // 🔹 2. Fetch from API in background
         viewModelScope.launch {
 
             try {
-
-                repository.fetchAndCache(category)
-
-                repository.getProducts(category).collect { products ->
-
-                    _uiState.value =
-                        ProductUiState.Success(products)
-                }
-
+                repository.refreshProducts(category)
             } catch (e: Exception) {
 
+                // Only show error if NO cached data exists
                 _uiState.value =
-                    ProductUiState.Error("Failed to load data")
+                    ProductUiState.Error("No Internet & No Cached Data")
             }
         }
     }

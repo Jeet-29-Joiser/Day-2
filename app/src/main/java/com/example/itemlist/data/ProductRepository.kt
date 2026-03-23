@@ -13,18 +13,27 @@ class ProductRepository @Inject constructor(
     private val dao: ProductDao
 ) {
 
+    // 🔹 SINGLE SOURCE OF TRUTH (Room)
     fun getProducts(category: String): Flow<List<Product>> {
 
         return dao.getProductsByCategory(category)
             .map { list -> list.map { it.toProduct() } }
     }
 
-    suspend fun fetchAndCache(category: String) {
+    // 🔹 NETWORK UPDATE (safe)
+    suspend fun refreshProducts(category: String) {
 
-        val products = api.getProductsByCategory(category)
+        try {
 
-        dao.clearProducts()
+            val products = api.getProductsByCategory(category)
 
-        dao.insertProducts(products.map { it.toEntity() })
+            dao.clearProducts()
+
+            dao.insertProducts(products.map { it.toEntity() })
+
+        } catch (e: Exception) {
+            // ❗ IMPORTANT
+            // Do nothing → fallback to cached data
+        }
     }
 }
